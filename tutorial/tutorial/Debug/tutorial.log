@@ -1,5 +1,0 @@
-﻿  tutorial.cpp
-c:\users\avneesh\documents\opengllearn\tutorial\tutorial\tutorial.cpp(61): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: see declaration of 'strcpy'
-  tutorial.vcxproj -> C:\Users\avneesh\Documents\openGLLearn\tutorial\Debug\tutorial.exe
-  tutorial.vcxproj -> C:\Users\avneesh\Documents\openGLLearn\tutorial\Debug\tutorial.pdb (Full PDB)
