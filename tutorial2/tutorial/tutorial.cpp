@@ -238,7 +238,18 @@ int main()
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
 	};
 
-
+	glm::vec3 cubePositions[] = {
+		glm::vec3(0.0f,  0.0f,  0.0f),
+		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f,  2.0f, -2.5f),
+		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
 
 	
 	GLuint VAO1;
@@ -321,7 +332,7 @@ int main()
 
 		//lightPos = glm::vec3(sin(glfwGetTime()),lightPos.y,cos(glfwGetTime()));
 		//Redering goes here
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//GLfloat timeValue = glfwGetTime();
@@ -338,10 +349,14 @@ int main()
 		glUseProgram(programID);
 		GLint objectColorLoc = glGetUniformLocation(programID, "objectColor");
 		GLint lightColorLoc = glGetUniformLocation(programID, "lightColor");
-		GLint lightPosLoc = glGetUniformLocation(programID, "light.position");
+		GLint lightDirPos = glGetUniformLocation(programID, "light.direction");
 		glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
 		glUniform3f(lightColorLoc, 1.0f, 0.5f, 1.0f);
-		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+		//glUniform4f(lightDirPos, -0.2f, -1.0f, -0.3f, 0.0f); //directional light
+		glUniform4f(lightDirPos, lightPos.x,lightPos.y,lightPos.z, 1.0f); //pointlight
+		glUniform1f(glGetUniformLocation(programID, "light.constant"), 1.0f);
+		glUniform1f(glGetUniformLocation(programID, "light.linear"), 0.09);
+		glUniform1f(glGetUniformLocation(programID, "light.quadratic"), 0.032);
 
 		// Create camera transformations
 		glm::mat4 view;
@@ -387,14 +402,28 @@ int main()
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, emissionmap);
 		glBindVertexArray(VAO1);
+
+		glm::mat4 model = glm::mat4(1.0f);
+		for (GLuint i = 0; i < 10; i++)
+		{
+			model = glm::mat4();
+			model = glm::translate(model, cubePositions[i]);
+			GLfloat angle = 20.0f * i;
+			model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+		/*
 		glm::mat4 model = glm::mat4(1.0f);
 		GLuint modelloc = glGetUniformLocation(programID, "model");
 		glUniformMatrix4fv(modelloc, 1, GL_FALSE, glm::value_ptr(model));
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
+		*/
 		glBindVertexArray(0);
+
 		
 		glUseProgram(lampprogramID);
 		// Get location objects for the matrices on the lamp shader (these could be different on a different shader)
